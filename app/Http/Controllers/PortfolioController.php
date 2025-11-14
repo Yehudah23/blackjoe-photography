@@ -104,11 +104,7 @@ class PortfolioController extends Controller
         }
     }
 
-    /**
-     * Update a portfolio item
-     * PUT/PATCH /portfolio/{id}
-     * Requires admin authentication
-     */
+    
     public function update(Request $request, string $id): JsonResponse
     {
         try {
@@ -121,7 +117,7 @@ class PortfolioController extends Controller
                 'description' => 'nullable|string',
             ]);
 
-            // Update text fields if provided
+            
             if ($request->has('title')) {
                 $portfolio->title = $request->input('title');
             }
@@ -132,7 +128,7 @@ class PortfolioController extends Controller
                 $portfolio->description = $request->input('description');
             }
 
-            // Handle file replacement if a new file is uploaded
+            
             if ($request->hasFile('file')) {
                 $file = $request->file('file');
                 
@@ -143,12 +139,12 @@ class PortfolioController extends Controller
                     ], 400);
                 }
 
-                // Delete old file
+                
                 if (Storage::exists($portfolio->file_path)) {
                     Storage::delete($portfolio->file_path);
                 }
 
-                // Store new file
+               
                 $mimeType = $file->getClientMimeType();
                 $isVideo = str_starts_with($mimeType, 'video/');
                 $path = $file->store('public/portfolio');
@@ -199,17 +195,12 @@ class PortfolioController extends Controller
         }
     }
 
-    /**
-     * Delete a portfolio item
-     * DELETE /api/portfolio/{id}
-     * Requires admin authentication
-     */
     public function destroy(Request $request, string $id): JsonResponse
     {
         try {
             $portfolio = Portfolio::findOrFail($id);
             
-            // Delete the file from storage
+            
             if (Storage::exists($portfolio->file_path)) {
                 Storage::delete($portfolio->file_path);
             }

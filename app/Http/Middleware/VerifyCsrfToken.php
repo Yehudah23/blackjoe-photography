@@ -21,5 +21,6 @@ class VerifyCsrfToken extends Middleware
         'admin/logout',
         'portfolio',
         'portfolio/*',
+        'contact', // Contact form endpoint
     ];
 }
