@@ -22,8 +22,15 @@ if [ -f "$PID_FILE" ]; then
   fi
 fi
 
-echo "Starting php artisan serve on 127.0.0.1:8000"
-nohup php artisan serve --host=127.0.0.1 --port=8000 > "$LOG_FILE" 2>&1 &
+# Find an available port starting from 8000
+PORT=8000
+while lsof -Pi :$PORT -sTCP:LISTEN -t >/dev/null 2>&1 ; do
+  echo "Port $PORT is in use, trying next port..."
+  PORT=$((PORT + 1))
+done
+
+echo "Starting php artisan serve on 127.0.0.1:$PORT"
+nohup php artisan serve --host=127.0.0.1 --port=$PORT > "$LOG_FILE" 2>&1 &
 NEW_PID=$!
 echo "$NEW_PID" > "$PID_FILE"
-echo "Started artisan serve (PID $NEW_PID). Logs: $LOG_FILE"
+echo "Started artisan serve on port $PORT (PID $NEW_PID). Logs: $LOG_FILE"
